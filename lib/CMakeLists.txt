@@ -3,7 +3,7 @@ project(BazaSylab)
 
 set(SOURCE_FILES
         ../src/SyllableBase.cpp
-        ../src/SyllableTree.cpp)
+        )
 
 add_library(BazaSylab ${SOURCE_FILES})
 

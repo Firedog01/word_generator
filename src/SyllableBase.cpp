@@ -3,17 +3,10 @@
 //
 
 #define DICT_FILE "../res/dict.txt"
+#define DICT_FILE_TEMP "../res/dict_temp.txt"
 #define PRESET_FILE "../res/preset.txt"
 
 #include "../lib/SyllableBase.h"
-
-unsigned int SyllableBase::display_length_stress(unsigned int &) {
-    return 0;
-}
-
-unsigned int SyllableBase::display_syllable_stress(unsigned int &) {
-    return 0;
-}
 
 SyllableBase::SyllableBase() {
     switch(handle_dict()) {
@@ -94,17 +87,32 @@ int SyllableBase::handle_dict() {
 //updates only dict.txt file
 void SyllableBase::update_dict() {
     std::string line;
-    std::fstream _dict(DICT_FILE);
-    if( ! _dict.good()) {
-        std::cout << "nie wprowadzono zmian \n";
+    std::fstream _dict_temp(DICT_FILE_TEMP, std::ios::out | std::ios::trunc | std::ios::in );
+    if( ! _dict_temp.good()) {
+        std::cout << "nie wprowadzono zmian. Nie utworzono dict_temp.txt\n";
     }
-    _dict.seekg(13);
-    _dict << n_consonants << '\n';
+    _dict_temp << "spolgloski = " << n_consonants << '\n';
+    _dict_temp << consonants[0];
+    for(int i = 1; i < n_consonants; i++) {
+        _dict_temp << ";" << consonants[i];
+    }
+    _dict_temp << "\nspolgloski = " << n_vowels << '\n';
+    _dict_temp << vowels[0];
+    for(int i = 1; i < n_vowels; i++) {
+        _dict_temp << ";" << vowels[i];
+    }
+    _dict_temp.seekg(0);
+    std::fstream _dict(DICT_FILE, std::ios::out|std::ios::trunc);
+    if( ! _dict.good()) {
+        std::cout << "nie wprowadzono zmian. Nie otwarto dict.txt\n";
+    }
+    for(int i = 0; i < 4; i++) {
+        getline(_dict_temp, line);
+        _dict << line << '\n';
+    }
 
-    std::getline(_dict, line); // wczytanie samoglosek
-    _dict.close();
+    _dict_temp.close();
     is_dict_modified = false;
-    return;
 }
 
 //uses cout to display contents of sounds tables
@@ -120,29 +128,76 @@ void SyllableBase::display_dict() {
 }
 
 //adds new vowel to vowel table
-void SyllableBase::add_vowel(std::string new_vowel) {
-    n_vowels-=-1;
-    std::string* temp = new std::string[n_vowels];
-    for(int i = 0; i < n_vowels - 1; i++) {
+void SyllableBase::add_vowel(std::string new_v) {
+    int n_new_v = 1;
+    for(int i = 0; i < new_v.length(); i++) {
+        if(new_v[i] == ' ') {
+            n_new_v++;
+            while(new_v[i] == ' ') { i++; }
+        }
+    }
+    auto* temp_new = new std::string[n_new_v];
+    for(int i = 0; i < n_new_v; i++) {
+        std::string temp_sound;
+        for(int j = 0; new_v[j] != ' ' && new_v[j] != 0; j++)
+            temp_sound+=new_v[j];
+        temp_new[i] = temp_sound;
+    }
+    n_vowels+=n_new_v;
+    auto* temp = new std::string[n_vowels];
+    for(int i = 0; i < n_vowels - n_new_v; i++) {
         temp[i] = vowels[i];
     }
-    temp[n_vowels-1] = new_vowel;
+    for(int i = 0; i < n_new_v; i++) {
+        temp[n_vowels-(n_new_v - i)] = new_v;
+    }
+    delete [] temp_new;
     delete [] vowels;
     vowels = temp;
     is_dict_modified = true;
 }
 
 //adds new consonant to conso table
-void SyllableBase::add_conso(std::string new_conso) {
-    n_consonants-=-1;
+void SyllableBase::add_conso(std::string new_c) {
+    int n_new_c = 1;
+    for(int i = 0; i < new_c.length(); i++) {
+        if(new_c[i] == ' ') {
+            n_new_c++;
+            while(new_c[i] == ' ') { i++; }
+        }
+    }
+    std::cout << "n_new_c = " << n_new_c << '\n';
+    std::string* temp_new = new std::string[n_new_c];
+    for(int i = 0; i < n_new_c; i++) {
+        std::string temp_sound;
+        for(int j = 0; new_c[j] != ' ' && new_c[j] != 0; j++)
+            temp_sound+=new_c[j];
+        temp_new[i] = temp_sound;
+    }
+    for(int i = 0; i < n_new_c; i++) {   //
+        std::cout << "temp_new[" << i << "] = " << temp_new[i] << '\n'; //---
+    }                                    //
+    std::cout << '\n';
+    n_consonants += n_new_c;
     std::string* temp = new std::string[n_consonants];
     for(int i = 0; i < n_consonants - 1; i++) {
         temp[i] = consonants[i];
     }
-    temp[n_consonants-1] = new_conso;
+    for(int i = 0, j = n_new_c; i < n_new_c; i++, j--) {
+        std::cout << "temp_new[" << i << "] = " << temp_new[i] << '\n';
+        std::cout << "temp[" << n_consonants - j << "] = \n" << j;
+        temp[n_consonants-j] = temp_new[i];
+    }
+    std::cout << std::endl;
+    delete [] temp_new;
     delete [] consonants;
     consonants = temp;
     is_dict_modified = true;
+}
+
+//removes sound from tables
+void SyllableBase::remove_sound(std::string rem) {
+
 }
 
 //reads from preset file and sets variables right

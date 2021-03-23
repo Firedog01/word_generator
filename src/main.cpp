@@ -23,28 +23,126 @@ int main() {
     cout << "|            Program do tworzenia slow            |\n";
     cout << "|          Wcisnij \'h\' by uzyskac pomoc.          |\n";
     cout << "+-------------------------------------------------+\n";
-
+    base.update_dict();
     //main program loop
     while(!exit) {
+        cout << "menu>";
         getline(cin, line);
         int i = 0;
         while (line[i] == ' ') { i++; }
         switch (line[i]) {
             case 'b':   //zacznij generowac slowa
+                ///////////////////////////////////////////////begin
                 word_loop(base);
                 break;
             case 'd':   //opcje slownika
-                mod_dictionary(base);
+                ///////////////////////////////////////////////dictionary
+                do { i++; } while (line[i] == ' ');
+                switch(line[i]) {
+                    case 0: {
+                        while (line[i] != 'x') {
+                            cout << "directory options>";
+                            getline(cin, line);
+                            i = 0;
+                            while (line[i] == ' ') { i++; }
+                            switch (line[i]) {
+                                case 'c':
+                                    do { i++; } while (line[i] == ' ');
+                                    switch (line[i]) {
+                                        case 0:
+                                            cout << "Podaj spolgloske:";
+                                            getline(cin, line);
+                                            base.add_conso(line);
+                                            break;
+                                        default:
+                                            base.add_conso(&line[i]);
+                                            break;
+                                    }
+                                    break;
+                                case 'v':
+                                    do { i++; } while (line[i] == ' ');
+                                    switch (line[i]) {
+                                        case 0:
+                                            cout << "Podaj samogloske:";
+                                            getline(cin, line);
+                                            base.add_vowel(line);
+                                            break;
+                                        default:
+                                            base.add_vowel(&line[i]);
+                                            break;
+                                    }
+                                    break;
+                                case 'd':
+                                    base.display_dict();
+                                    break;
+                                case 'r':
+                                    do { i++; } while (line[i] == ' ');
+                                    switch (line[i]) {
+                                        case 0:
+                                            cout << "Podaj co usunac:";
+                                            getline(cin, line);
+                                            //base.remove_sound(line);
+                                    }
+                                    break;
+                                case 'x':
+                                    base.update_dict();
+                                    break;
+                                default:
+                                    cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
+                            }
+                        }
+                        } //case 0
+                        break;
+                    case 'd':
+                        base.display_dict();
+                        break;
+                    case 'c':
+                        do { i++; } while (line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "podaj nowa spolgloske:";
+                                getline(cin, line);
+                                base.add_conso(line);
+                                break;
+                            default:
+                                base.add_conso(&line[i]);
+                        }
+                        base.update_dict();
+                        break;
+                    case 'v':
+                        do { i++; } while (line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "podaj nowa samogloske:";
+                                getline(cin, line);
+                                base.add_vowel(line);
+                                break;
+                            default:
+                                base.add_vowel(&line[i]);
+                                break;
+                        }
+                        base.update_dict();
+                        break;
+                    case 'r':
+                        break;
+                    default:
+                        cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
+                        break;
+                }
                 break;
             case 'h':   //pomoc
+                ///////////////////////////////////////////////help
                 display_help('a');
                 break;
             case 'o':   //opcje
+                ///////////////////////////////////////////////options
                 break;
             case 'q':   //wyjście
+                ///////////////////////////////////////////////quit
                 exit = true;
                 break;
             default:    //error
+                ///////////////////////////////////////////////error
                 break;
         }
     }
@@ -82,10 +180,12 @@ void mod_dictionary(SyllableBase& base) {
                 base.display_dict();
                 break;
             case 'c': //spolgloska
+                cout << "podaj spółgłoskę: ";
                 getline(cin, sound);
                 base.add_conso(sound);
                 break;
             case 'v':
+                cout << "podaj samogłoskę: ";
                 getline(cin, sound);
                 base.add_vowel(sound);
                 break;

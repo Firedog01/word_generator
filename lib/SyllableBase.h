@@ -10,7 +10,8 @@
 #include <random>
 #include <chrono>
 #include <string>
-#include "SyllableTree.h"
+#include <iostream>
+#include <fstream>
 
 class SyllableBase {
     unsigned seed;
@@ -41,12 +42,11 @@ class SyllableBase {
     int handle_preset();        //updates above vars
 
 public:
-    unsigned int display_length_stress(unsigned int &);
-    unsigned int display_syllable_stress(unsigned int &);
     void update_dict();          //updates dictionary !!!file!!!
     void display_dict();
-    void add_vowel(std::string);
-    void add_conso(std::string);
+    void add_vowel(std::string);        // *
+    void add_conso(std::string);        // * todo modify that allows to edit multiple sounds
+    void remove_sound(std::string);     // *
 
     std::string new_w();        //generuje nowe slowo
     SyllableBase();
