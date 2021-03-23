@@ -1,0 +1,9 @@
+spolgloski = 21
+b;c;d;f;g;h;j;k;l;m;n;p;q;r;s;t;u;v;w;x;z
+samogloski = 6
+a;e;i;o;u;y
+
+Kolejność głosek nie ma znaczenia. 
+Po ostatniej głosce nie ma średnika. 
+Nie może być mniej niż 2 litery w linii.
+Głoski mogą zawierać się z kilku liter.
