@@ -5,6 +5,7 @@
 #define DICT_FILE "../res/dict.txt"
 #define DICT_FILE_TEMP "../res/dict_temp.txt"
 #define PRESET_FILE "../res/preset.txt"
+#define SAVED_WORDS "../saved_words.txt"
 
 #include "../lib/SyllableBase.h"
 
@@ -28,8 +29,6 @@ SyllableBase::SyllableBase() {
 SyllableBase::~SyllableBase() {
     delete [] vowels;
     delete [] consonants;
-    delete [] syllable_stress;
-    delete [] length_stress;
 }
 
 ///
@@ -274,6 +273,33 @@ void SyllableBase::string_sort(std::string* table, int length) {
 }
 
 
+void SyllableBase::Word::set_properties(int n, Syllable* ptr) {
+    n_syllable = n;
+    syllable = ptr;
+}
+
+SyllableBase::Syllable SyllableBase::Word::get_syllable(int syl_pos) {
+    if(syl_pos < n_syllable)
+        return syllable[syl_pos];
+    return SyllableBase::Syllable();
+}
+
+int SyllableBase::Word::get_n() const {
+    return n_syllable;
+}
+
+void SyllableBase::generate_word_base(int length_min, int length_man) {
+    //todo
+    //trzeba najpierw policzyć sumę wielokrotną wszystkich elementów o długości pomiędzy min i max
+    //długość sylaby wacha się od 1 do max_syllable_len
+    
+}
+
+int SyllableBase::set_var(std::string& line) {
+    int i = 0;
+    while(line[i] != '=') { i++;}
+    return std::stoi(&line[++i]);
+}
 
 int SyllableBase::handle_preset() {
     std::fstream _preset(PRESET_FILE, std::ios::in | std::ios::out);
@@ -282,39 +308,12 @@ int SyllableBase::handle_preset() {
     }
     std::string line;
     _preset.seekg(0);                 //setting cursor to beginning
-    std::getline(_preset, line);    //NO TOUCHY:
-
-    std::getline(_preset, line);    //is dict modified
-    int i = 0;
-    while(line[i] != '=') { i++;}
-    is_dict_modified = !!( std::stoi(&line[++i]) );
-
-    std::getline(_preset, line);    //max length
-    i = 0;
-    while(line[i] != '=') { i++;}
-    max_length = std::stoi(&line[++i]);
-
-    std::getline(_preset, line);    //length stress
-    length_stress = new int[max_length];
-    i = 0;
-    while(line[i] != '=') { i++;}
-    for(int j = 0; j < max_length; j++) {
-        i++;
-        length_stress[j] = std::stoi(&line[i]);
-        while(line[i] >= '0' && line[i] <= '9') { i++; }
-    }
-
-    std::getline(_preset, line);    //length stress
-    syllable_stress = new int[max_syllable_len];
-    i = 0;
-    while(line[i] != '=') { i++;}
-    for(int j = 0; j < max_syllable_len; j++) {
-        i++;
-        syllable_stress[j] = std::stoi(&line[i]);
-        while(line[i] >= '0' && line[i] <= '9') { i++; }
-    }
-    is_stress_modified_l = false;
-    is_stress_modified_s = false;
+    std::getline(_preset, line);    //max syllable length
+    max_syllable_len = set_var(line);
+    std::getline(_preset, line);    //min word length
+    word_length_min = set_var(line);
+    std::getline(_preset, line);    //max word length
+    word_length_min = set_var(line);
     return 0;
 }
 
@@ -322,7 +321,6 @@ int SyllableBase::handle_preset() {
 
 std::string SyllableBase::new_w() {
     std::string word;
-    //this is bit complicated, but each 6 bits represents one syllable
     int total_word_length = 0;
     for(int i = 0; i < max_length; i++) {
         total_word_length += length_stress[i];
@@ -345,7 +343,6 @@ std::string SyllableBase::new_w() {
     }
     return word;
 }
-
 
 std::string SyllableBase::get_syllable(int generated_length, std::uniform_int_distribution<int>& vowel,std::uniform_int_distribution<int>& conso, int& last_vowel, int& last_conso) {
     std::string syl;
@@ -370,10 +367,6 @@ std::string SyllableBase::get_syllable(int generated_length, std::uniform_int_di
     return syl;
 }
 
-// gets table of layout
-// returns which in order is drawn
-// eg. for 1/2/3 drawn 2 returns 2
-// is required by get_syllable
 int SyllableBase::which_one(int* table, int len, int generated) {
     for(int i = 0; i < len; i++) {
         generated -= table[i];
@@ -383,6 +376,16 @@ int SyllableBase::which_one(int* table, int len, int generated) {
     }
     return 0;
 }
+
+
+
+void SyllableBase::save_word(std::string word) {
+    std::fstream _save(SAVED_WORDS, std::ios::app);
+    _save << word << '\n';
+    _save.close();
+}
+
+
 
 
 

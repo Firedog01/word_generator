@@ -1,5 +1,4 @@
 NO TOUCHY:
-is dict modified=0
 max length=4
 length stress=3/4/3/1
 syllable stress=6/4/2

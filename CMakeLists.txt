@@ -8,3 +8,4 @@ add_subdirectory(res)
 
 FILE(COPY res/dict.txt DESTINATION "${CMAKE_BINARY_DIR}/res")
 FILE(COPY res/preset.txt DESTINATION "${CMAKE_BINARY_DIR}/res")
+FILE(COPY res/saved_words.txt DESTINATION "${CMAKE_BINARY_DIR}")

@@ -11,6 +11,12 @@ void display_help(char a);
  *  * zapisywanie kilku presetów
  *  * mechanizm zapamiętywania dobrych połączeń sylab (?)
  *  * może tworzenie jakiś pregenerowanych struktur (?)
+ *
+ *
+Kolejność głosek nie ma znaczenia.
+Po ostatniej głosce nie ma średnika.
+Nie może być mniej niż 2 litery w linii.
+Głoski mogą zawierać się z kilku liter.
  */
 
 int main() {
@@ -31,12 +37,30 @@ int main() {
         switch (line[i]) {
             case 'b':   //zacznij generowac slowa
                 ///////////////////////////////////////////////begin
-                word_loop(base);
+                {
+                    cout << "word creation>\n";
+                    string word;
+                while (line[i] != 'x') {
+                    word = base.new_w();
+                    cout << word << "\t\t:";
+                    getline(cin, line);
+                    switch(line[i]) {
+                        case 'l':
+                            //modify length
+                            break;
+                        case 's':
+                            base.save_word(word);
+                            break;
+                    }
+                }
+                } //b
+                //word_loop(base);
                 break;
             case 'd':   //opcje slownika
                 ///////////////////////////////////////////////dictionary
+                {
                 do { i++; } while (line[i] == ' ');
-                switch(line[i]) {
+                switch (line[i]) {
                     case 0: {
                         while (line[i] != 'x') {
                             cout << "directory options>";
@@ -45,7 +69,8 @@ int main() {
                             while (line[i] == ' ') { i++; }
                             switch (line[i]) {
                                 case 'c':
-                                    do { i++; } while (line[i] == ' ');
+                                    do { i++; }
+                                    while (line[i] == ' ');
                                     switch (line[i]) {
                                         case 0:
                                             cout << "Podaj spolgloske:";
@@ -58,7 +83,8 @@ int main() {
                                     }
                                     break;
                                 case 'v':
-                                    do { i++; } while (line[i] == ' ');
+                                    do { i++; }
+                                    while (line[i] == ' ');
                                     switch (line[i]) {
                                         case 0:
                                             cout << "Podaj samogloske:";
@@ -74,7 +100,8 @@ int main() {
                                     base.display_dict();
                                     break;
                                 case 'r':
-                                    do { i++; } while (line[i] == ' ');
+                                    do { i++; }
+                                    while (line[i] == ' ');
                                     switch (line[i]) {
                                         case 0:
                                             cout << "Podaj co usunac:";
@@ -92,14 +119,15 @@ int main() {
                                     cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
                             }
                         }
-                        } //case 0
+                    } //case 0
                         break;
                     case 'd':
                         base.display_dict();
                         break;
                     case 'c':
-                        do { i++; } while (line[i] == ' ');
-                        switch(line[i]) {
+                        do { i++; }
+                        while (line[i] == ' ');
+                        switch (line[i]) {
                             case 0:
                                 cout << "podaj nowa spolgloske:";
                                 getline(cin, line);
@@ -111,8 +139,9 @@ int main() {
                         base.display_dict();
                         break;
                     case 'v':
-                        do { i++; } while (line[i] == ' ');
-                        switch(line[i]) {
+                        do { i++; }
+                        while (line[i] == ' ');
+                        switch (line[i]) {
                             case 0:
                                 cout << "podaj nowa samogloske:";
                                 getline(cin, line);
@@ -125,7 +154,8 @@ int main() {
                         base.display_dict();
                         break;
                     case 'r':
-                        do { i++; } while (line[i] == ' ');
+                        do { i++; }
+                        while (line[i] == ' ');
                         switch (line[i]) {
                             case 0:
                                 cout << "Podaj co usunac:";
@@ -145,6 +175,7 @@ int main() {
                         cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
                         break;
                 }
+                } //d
                 break;
             case 'h':   //pomoc
                 ///////////////////////////////////////////////help
