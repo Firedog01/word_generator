@@ -38,32 +38,31 @@ class SyllableBase {
     std::string* consonants;    //table of consonants
     int n_consonants;           //number of consonants
     int handle_dict();          //creates above vars
-    void string_sort(std::string*, int);
-    //void sort_tables();         //sorts both vowels and consonants
+    void string_sort(std::string*, int);//sorts arrays of strings because for some reason std::sort doesnt work ://
+    void update_dict();          //updates dictionary !!!file!!!
 
     int* syllable_stress;       //preferred length of one syllable
     int* length_stress;         //preferred length of word (in syllables)
     int  max_length;            //max number of syllables
-    bool is_dict_handled;       //
-    bool is_dict_modified;      //
+    bool is_dict_good;          //
     bool is_stress_modified_s;  //how long syllables will be used
     bool is_stress_modified_l;  //how long will be generated word
     int handle_preset();        //updates above vars
                                 //reads from preset file and sets variables right
 
-    int find_sound(bool, const std::string&); //returns position of sound in table. If not found returns 0
-                                       //first bool states if searching in consonants(0) or vowels(1)
+    int find_sound(bool, const std::string&);   //returns position of sound in table. If not found returns 0
+                                                //first bool states if searching in consonants(0) or vowels(1)
 
 public:
-    void sort_tables();         //sorts both vowels and consonants
-    void update_dict();          //updates dictionary !!!file!!!
-    void display_dict();
-    void add_vowel(std::string);
-    void add_conso(std::string);
-    void remove_sound(std::string);     // *
-
-    std::string new_w();        //generates new word
     SyllableBase();
     ~SyllableBase();
+
+    void display_dict();
+    void add_vowel(std::string);//*these add new sound to tables but do not update dict file
+    void add_conso(std::string);//*
+    void remove_sound(std::string);//removes sound from tables, but does not update dict file
+
+    std::string new_w();        //generates new word
+    void save_word(std::string);//saves new word in saved_words.txt
 };
 #endif //GENERATOR_SLOW_SYLLABLEBASE_H

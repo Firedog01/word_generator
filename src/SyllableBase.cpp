@@ -40,6 +40,7 @@ SyllableBase::~SyllableBase() {
 int SyllableBase::handle_dict() {
     std::fstream _dict(DICT_FILE, std::ios::in);
     if( ! _dict.good()) {
+        is_dict_good = false;
         return 1;
     }
     std::string line;
@@ -70,7 +71,7 @@ int SyllableBase::handle_dict() {
         }
     } //zliczenie ilości samoglosek
     vowels = new std::string[n_vowels];
-    for(int i = 0, j = 0; i < n_consonants && j < line.length(); i++, j++) { //j to pozycja względem początku, i to liczba komórki
+    for(int i = 0, j = 0; i < n_vowels && j < line.length(); i++, j++) { //j to pozycja względem początku, i to liczba komórki
         std::string tmp;
         while(line[j] != ';' && line[j] != 0) {
             tmp += line[j];
@@ -79,8 +80,7 @@ int SyllableBase::handle_dict() {
         vowels[i] = tmp;
     }
     _dict.close();
-    is_dict_modified = false;
-    is_dict_handled = true;
+    is_dict_good = true;
     return 0;
 }
 
@@ -110,9 +110,7 @@ void SyllableBase::update_dict() {
         getline(_dict_temp, line);
         _dict << line << '\n';
     }
-
     _dict_temp.close();
-    is_dict_modified = false;
 }
 
 //uses cout to display contents of sounds tables
@@ -154,7 +152,8 @@ void SyllableBase::add_vowel(std::string new_v) {
     delete [] temp_new;
     delete [] vowels;
     vowels = temp;
-    is_dict_modified = true;
+    string_sort(vowels, n_vowels);
+    update_dict();
 }
 
 //adds new consonant to conso table
@@ -185,7 +184,8 @@ void SyllableBase::add_conso(std::string new_c) {
     delete [] temp_new;
     delete [] consonants;
     consonants = temp;
-    is_dict_modified = true;
+    string_sort(consonants, n_consonants);
+    update_dict();
 }
 
 //removes sound from tables
@@ -206,15 +206,38 @@ void SyllableBase::remove_sound(std::string rem) {
         rem_table[i] = temp_sound;
     }
     for(int i = 0; i < n_rem; i++) {
-        int a = find_sound(0, rem_table[i]);
+        int a = find_sound(0, rem_table[i]); //spolgloski
         if(a == 0) {
-            a = find_sound(1, rem_table[i]);
+            a = find_sound(1, rem_table[i]); //samogloski
             if(a == 0) {
                 std::cout << "nie znaleziono gloski " << rem_table[i] << '\n';
+                continue;
+            }
+            vowels[a-1] = "";
+            n_vowels -= 1;
+            auto* temp = new std::string[n_vowels];
+            for(int j = 0, k = 0; j < n_vowels + 1; j++) {
+                if(!vowels[j].empty()) {
+                    temp[k] = vowels[j];
+                    k++;
+                }
+            }
+            delete [] vowels;
+            vowels = temp;
+        }
+        consonants[a-1] = "";
+        n_consonants -= 1;
+        auto* temp = new std::string[n_consonants];
+        for(int j = 0, k = 0; j < n_consonants + 1; j++) {
+            if(!consonants[j].empty()) {
+                temp[k] = consonants[j];
+                k++;
             }
         }
-        consonants[a] = (char)0;
+        delete [] consonants;
+        consonants = temp;
     }
+    update_dict();
 }
 
 int SyllableBase::find_sound(bool b, const std::string& sound) {//0 if conso
@@ -229,22 +252,26 @@ int SyllableBase::find_sound(bool b, const std::string& sound) {//0 if conso
     }
     for(int i = 0; i < length; i++) {
         if(table[i] == sound) {
-            return i;
+            return i + 1;
         }
     }
     return 0;
 }
 
-void SyllableBase::sort_tables() {
-    string_sort(consonants, n_consonants);
-    //display_dict();
-}
-
 void SyllableBase::string_sort(std::string* table, int length) {
     //because table is already almost sorted will be used insertion sort
-
+    //todo i was lazy and wrote bubble. Correct to insertion. [low priority]
+    bool sorted = false;
+    while(!sorted) {
+        sorted = true;
+        for (int i = 0; i < length - 1; i++) {
+            if (table[i].compare(table[i + 1]) > 0) { // next is smaller
+                std::swap(table[i], table[i + 1]);
+                sorted = false;
+            }
+        }
+    }
 }
-
 
 
 

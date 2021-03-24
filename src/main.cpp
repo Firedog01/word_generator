@@ -4,7 +4,6 @@
 using namespace std;
 
 void word_loop(SyllableBase&);
-void mod_dictionary(SyllableBase&);
 void display_help(char a);
 
 /*
@@ -23,11 +22,7 @@ int main() {
     cout << "|            Program do tworzenia slow            |\n";
     cout << "|          Wcisnij \'h\' by uzyskac pomoc.          |\n";
     cout << "+-------------------------------------------------+\n";
-    base.update_dict();
     //main program loop
-    //string s1 = "z", s2 = "hg"; s1 > s2
-    //cout << s1.compare(s2) << '\n';
-    //cout << s2.compare(s1) << '\n';
     while(!exit) {
         cout << "menu>";
         getline(cin, line);
@@ -84,11 +79,14 @@ int main() {
                                         case 0:
                                             cout << "Podaj co usunac:";
                                             getline(cin, line);
-                                            //base.remove_sound(line);
+                                            base.remove_sound(line);
+                                            break;
+                                        default:
+                                            base.remove_sound(&line[i]);
+                                            break;
                                     }
                                     break;
                                 case 'x':
-                                    base.update_dict();
                                     break;
                                 default:
                                     cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
@@ -110,7 +108,6 @@ int main() {
                             default:
                                 base.add_conso(&line[i]);
                         }
-                        base.update_dict();
                         base.display_dict();
                         break;
                     case 'v':
@@ -125,13 +122,24 @@ int main() {
                                 base.add_vowel(&line[i]);
                                 break;
                         }
-                        base.update_dict();
                         base.display_dict();
                         break;
                     case 'r':
+                        do { i++; } while (line[i] == ' ');
+                        switch (line[i]) {
+                            case 0:
+                                cout << "Podaj co usunac:";
+                                getline(cin, line);
+                                base.remove_sound(line);
+                                break;
+                            default:
+                                base.remove_sound(&line[i]);
+                                break;
+                        }
+                        base.display_dict();
                         break;
-                    case 's':
-                        base.sort_tables();
+                    case 'x':
+                        cout << "Aby wyjsc z programu nacisnij \'q\'.\n";
                         break;
                     default:
                         cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
@@ -174,32 +182,6 @@ void word_loop(SyllableBase& base) {
                 break;
             default:
                 break;
-        }
-    }
-}
-
-void mod_dictionary(SyllableBase& base) {
-    char a;
-    string sound;
-    while (true) {
-        switch(a = getchar()) {
-            cout << a << '\n';
-            case 'd':
-                base.display_dict();
-                break;
-            case 'c': //spolgloska
-                cout << "podaj spółgłoskę: ";
-                getline(cin, sound);
-                base.add_conso(sound);
-                break;
-            case 'v':
-                cout << "podaj samogłoskę: ";
-                getline(cin, sound);
-                base.add_vowel(sound);
-                break;
-            case 'x':
-                base.update_dict();
-                return;
         }
     }
 }
