@@ -117,14 +117,13 @@ void SyllableBase::update_dict() {
 
 //uses cout to display contents of sounds tables
 void SyllableBase::display_dict() {
-    std::cout << "Spolgloski:\n";
+    std::cout << "Spolgloski (" << n_consonants << "):\n";
     for(int i = 0; i < n_consonants; i++)
         std::cout << consonants[i] << ' ';
-    std::cout << "\nSamogloski:\n";
+    std::cout << "\nSamogloski (" << n_vowels <<  "):\n";
     for(int i = 0; i < n_vowels; i++)
         std::cout << vowels[i] << ' ';
     std::cout << '\n';
-
 }
 
 //adds new vowel to vowel table
@@ -137,10 +136,11 @@ void SyllableBase::add_vowel(std::string new_v) {
         }
     }
     auto* temp_new = new std::string[n_new_v];
-    for(int i = 0; i < n_new_v; i++) {
+    for(int i = 0, j = 0; i < n_new_v; i++) {
         std::string temp_sound;
-        for(int j = 0; new_v[j] != ' ' && new_v[j] != 0; j++)
+        for(; new_v[j] != ' ' && new_v[j] != 0; j++)
             temp_sound+=new_v[j];
+        j++;
         temp_new[i] = temp_sound;
     }
     n_vowels+=n_new_v;
@@ -148,8 +148,8 @@ void SyllableBase::add_vowel(std::string new_v) {
     for(int i = 0; i < n_vowels - n_new_v; i++) {
         temp[i] = vowels[i];
     }
-    for(int i = 0; i < n_new_v; i++) {
-        temp[n_vowels-(n_new_v - i)] = new_v;
+    for(int i = 0, j = n_new_v; i < n_new_v; i++, j--) {
+        temp[n_vowels-j] = temp_new[i];
     }
     delete [] temp_new;
     delete [] vowels;
@@ -166,29 +166,22 @@ void SyllableBase::add_conso(std::string new_c) {
             while(new_c[i] == ' ') { i++; }
         }
     }
-    std::cout << "n_new_c = " << n_new_c << '\n';
-    std::string* temp_new = new std::string[n_new_c];
-    for(int i = 0; i < n_new_c; i++) {
+    auto* temp_new = new std::string[n_new_c];
+    for(int i = 0, j = 0; i < n_new_c; i++) {
         std::string temp_sound;
-        for(int j = 0; new_c[j] != ' ' && new_c[j] != 0; j++)
-            temp_sound+=new_c[j];
+        for(; new_c[j] != ' ' && new_c[j] != 0; j++)
+            temp_sound += new_c[j];
+        j++;
         temp_new[i] = temp_sound;
     }
-    for(int i = 0; i < n_new_c; i++) {   //
-        std::cout << "temp_new[" << i << "] = " << temp_new[i] << '\n'; //---
-    }                                    //
-    std::cout << '\n';
     n_consonants += n_new_c;
-    std::string* temp = new std::string[n_consonants];
-    for(int i = 0; i < n_consonants - 1; i++) {
+    auto* temp = new std::string[n_consonants];
+    for(int i = 0; i < n_consonants - n_new_c; i++) {
         temp[i] = consonants[i];
     }
     for(int i = 0, j = n_new_c; i < n_new_c; i++, j--) {
-        std::cout << "temp_new[" << i << "] = " << temp_new[i] << '\n';
-        std::cout << "temp[" << n_consonants - j << "] = \n" << j;
         temp[n_consonants-j] = temp_new[i];
     }
-    std::cout << std::endl;
     delete [] temp_new;
     delete [] consonants;
     consonants = temp;
@@ -197,10 +190,64 @@ void SyllableBase::add_conso(std::string new_c) {
 
 //removes sound from tables
 void SyllableBase::remove_sound(std::string rem) {
+    int n_rem = 1;
+    for(int i = 0; i < rem.length(); i++) {
+        if(rem[i] == ' ') {
+            n_rem++;
+            while(rem[i] == ' ') { i++; }
+        }
+    }
+    auto* rem_table = new std::string[n_rem];
+    for(int i = 0, j = 0; i < n_rem; i++) {
+        std::string temp_sound;
+        for(; rem[j] != ' ' && rem[j] != 0; j++)
+            temp_sound += rem[j];
+        j++;
+        rem_table[i] = temp_sound;
+    }
+    for(int i = 0; i < n_rem; i++) {
+        int a = find_sound(0, rem_table[i]);
+        if(a == 0) {
+            a = find_sound(1, rem_table[i]);
+            if(a == 0) {
+                std::cout << "nie znaleziono gloski " << rem_table[i] << '\n';
+            }
+        }
+        consonants[a] = (char)0;
+    }
+}
+
+int SyllableBase::find_sound(bool b, const std::string& sound) {//0 if conso
+    int length;
+    std::string* table;
+    if(b) {
+        length = n_vowels;
+        table = vowels;
+    } else {
+        length = n_consonants;
+        table = consonants;
+    }
+    for(int i = 0; i < length; i++) {
+        if(table[i] == sound) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+void SyllableBase::sort_tables() {
+    string_sort(consonants, n_consonants);
+    //display_dict();
+}
+
+void SyllableBase::string_sort(std::string* table, int length) {
+    //because table is already almost sorted will be used insertion sort
 
 }
 
-//reads from preset file and sets variables right
+
+
+
 int SyllableBase::handle_preset() {
     std::fstream _preset(PRESET_FILE, std::ios::in | std::ios::out);
     if( ! _preset.good()) {
@@ -245,7 +292,7 @@ int SyllableBase::handle_preset() {
 }
 
 
-//generates new word
+
 std::string SyllableBase::new_w() {
     std::string word;
     //this is bit complicated, but each 6 bits represents one syllable
@@ -272,11 +319,7 @@ std::string SyllableBase::new_w() {
     return word;
 }
 
-//generates new syllable
-// implemented:
-// * differentiates sounds between syllables.
-//      prevents from double vowels or consonants back to back
-//      (negative) will not create structures as such: v_1c_1 v_2c_1
+
 std::string SyllableBase::get_syllable(int generated_length, std::uniform_int_distribution<int>& vowel,std::uniform_int_distribution<int>& conso, int& last_vowel, int& last_conso) {
     std::string syl;
     int letter;
@@ -313,3 +356,7 @@ int SyllableBase::which_one(int* table, int len, int generated) {
     }
     return 0;
 }
+
+
+
+

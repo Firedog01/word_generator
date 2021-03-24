@@ -25,6 +25,9 @@ int main() {
     cout << "+-------------------------------------------------+\n";
     base.update_dict();
     //main program loop
+    //string s1 = "z", s2 = "hg"; s1 > s2
+    //cout << s1.compare(s2) << '\n';
+    //cout << s2.compare(s1) << '\n';
     while(!exit) {
         cout << "menu>";
         getline(cin, line);
@@ -108,6 +111,7 @@ int main() {
                                 base.add_conso(&line[i]);
                         }
                         base.update_dict();
+                        base.display_dict();
                         break;
                     case 'v':
                         do { i++; } while (line[i] == ' ');
@@ -122,8 +126,12 @@ int main() {
                                 break;
                         }
                         base.update_dict();
+                        base.display_dict();
                         break;
                     case 'r':
+                        break;
+                    case 's':
+                        base.sort_tables();
                         break;
                     default:
                         cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
