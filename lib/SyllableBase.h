@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <functional>
 
+//#include "../lib/Dictionary.h"
+
 class SyllableBase {
     //-------------------
     //everything connected to rng
@@ -49,6 +51,7 @@ class SyllableBase {
     int handle_dict();          //creates above vars
     void string_sort(std::string*, int);//sorts arrays of strings because for some reason std::sort doesnt work ://
     void update_dict();          //updates dictionary !!!file!!!
+
 
     //-------------------
     //communicating with preset file and generating word base
@@ -97,6 +100,8 @@ class SyllableBase {
 public:
     SyllableBase();
     ~SyllableBase();
+
+    //Dictionary dictionary;
 
     void display_dict();
     void add_vowel(std::string);//*these add new sound to tables but do not update dict file

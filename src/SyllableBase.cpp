@@ -292,7 +292,53 @@ void SyllableBase::generate_word_base(int length_min, int length_man) {
     //todo
     //trzeba najpierw policzyć sumę wielokrotną wszystkich elementów o długości pomiędzy min i max
     //długość sylaby wacha się od 1 do max_syllable_len
-    
+
+    //najpierw policzmy sumę wszystkich elementów, żeby zainicjalizować tablicę?
+    //albo nie.. możę ztobić tablicę tablic a potem ją zmergować
+
+    //zliczenie i zainicjowanie wartościami powinno przebiegać równocześnie
+
+    //mając już rozważaną długość słowa, oznaczmy ją jako l
+    //potrzebujemy wyznaczyć ilość z podziałów na sylaby. Np, dla l=5 podział 4+1 z=1
+    //trzeba wyznaczyć z_min i z_max
+    //czyli przeiterować przez wszystkie interesujące nas kombinacje
+
+    //może funkcja która potem przechodzi przez tablicę dla danego k i danego z
+    //wyeliminuje niechciane kombinacje np same sylaby
+
+    //funkcja do iteracji po tablicy liczb
+    //np dla max_syl_len = 4 i z = 2
+    //2|1|4 -> 2|2|1 -> 2|2|2 itp
+
+    /*
+     * Syllable inter_tab(int* tab, int n_tab, ); //
+     * Word* generate_syl_pos(int k, int z, int* iter_tab, int n);
+     * int resize_tab(int* tab, int old_n); //returns new_n
+     * void resize_tab(int* tab, int old_n, int_new_n);
+     * int count_and_rewrite(int* tab, int old_n); //returns n
+     *
+     *  Word** syl_pos_base;
+     *  for(int k = length_min; k <= length_max; k++) {
+     *      //wyznaczenie z_min i z_max;
+     *      for(int z = z_min; z <= z_max; z++) {
+     *          int* iter_tab = new int[z];
+     *          for(int i = 0; i < z; i++) {
+     *              iter_tab[i] = 1;
+     *          }
+     *          syl_pos_base[k - length_min] = generate_syl_pos(k, z, iter_tab);
+     *
+     *      }
+     *  }
+     *
+     *
+     *  Word* generate_syl_pos(int k, int z, int* iter_tab, int n) {
+     *      Word* tab;
+     *      while( // wszystkie komórki w iter_tab są równe max_syl_pos) {
+     *
+     *      }
+     *
+     *  }
+     */
 }
 
 int SyllableBase::set_var(std::string& line) {
