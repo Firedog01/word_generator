@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.17)
-project(BazaSylab)
+project(SyllableBase)
 
 set(SOURCE_FILES
         ../src/SyllableBase.cpp
-        ../src/Dictionary.cpp)
+        ../src/Dictionary.cpp
+        ../src/Options.cpp
+        )
 
-add_library(BazaSylab ${SOURCE_FILES})
+add_library(SyllableBase ${SOURCE_FILES})
 
-target_include_directories(BazaSylab PUBLIC include)
+target_include_directories(SyllableBase PUBLIC include)

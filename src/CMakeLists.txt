@@ -7,4 +7,4 @@ set(SOURCE_FILES
 
 add_executable(WordGen ${SOURCE_FILES})
 
-target_link_libraries(WordGen BazaSylab)
+target_link_libraries(WordGen SyllableBase)

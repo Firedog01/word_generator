@@ -14,8 +14,10 @@
 #include <fstream>
 #include <algorithm>
 #include <functional>
+#include <vector>
 
-//#include "../lib/Dictionary.h"
+#include "../lib/Options.h"
+#include "../lib/Dictionary.h"
 
 class SyllableBase {
     //-------------------
@@ -38,23 +40,10 @@ class SyllableBase {
     // returns which in order is drawn
     // eg. for 1/2/3 drawn 2 returns 2
     // is required by get_syllable
-    int which_one(int*, int, int);
+    int which_one(const int*, int, int);
 
     //-------------------
-    //communicating with dict.txt file
-    //-------------------
-    bool is_dict_good;          //set true if file
-    std::string* vowels;        //table of vowels
-    int n_vowels;               //number of vowels
-    std::string* consonants;    //table of consonants
-    int n_consonants;           //number of consonants
-    int handle_dict();          //creates above vars
-    void string_sort(std::string*, int);//sorts arrays of strings because for some reason std::sort doesnt work ://
-    void update_dict();          //updates dictionary !!!file!!!
-
-
-    //-------------------
-    //communicating with preset file and generating word base
+    //generating word base
     //-------------------
     struct Syllable {
         int length;
@@ -69,46 +58,25 @@ class SyllableBase {
         int get_n() const;
     };
 
-    int max_syllable_len;       //maximal generated length of syllable, in sounds
-    int n_cons_vowels;          //number of maximal consecutive vowels in a row
-    int word_length_min;        //*
-    int word_length_max;        //* interval of considered lengths (in sounds)
-
     //stores every available syllable length combination
     //may be big? Although im not sure
-    Word* word_base;
+    std::vector<Word> word_base;
 
-    //generates every acceptable word as combination on syllables(above struct)
-    //generation excludes:
-    //      - words constructed of only vowels
-    //      - row of more than n consecutive vowels
-    //      - ???
-    //      - profit
+    //generates every acceptable word as combination on syllables
+    //but only their lengths. Vowel position will be generated later
     void generate_word_base(int length_min, int length_man);
 
-    //updates above vars
-    //reads from preset file and sets variables right
-    static int set_var(std::string&);
-    int handle_preset();
+    Syllable iterate_Tab(int*, int);
 
-    //-------------------
-    //additional functions
-    //-------------------
-    //returns position of sound in table. If not found returns 0
-    //first bool states if searching in consonants(0) or vowels(1)
-    int find_sound(bool, const std::string&);
+
 public:
     SyllableBase();
     ~SyllableBase();
 
-    //Dictionary dictionary;
-
-    void display_dict();
-    void add_vowel(std::string);//*these add new sound to tables but do not update dict file
-    void add_conso(std::string);//*
-    void remove_sound(std::string);//removes sound from tables, but does not update dict file
+    Options options;
+    Dictionary dictionary;
 
     std::string new_w();        //generates new word
-    void save_word(std::string);//saves new word in saved_words.txt
+    static void save_word(const std::string&);//saves new word in saved_words.txt
 };
 #endif //GENERATOR_SLOW_SYLLABLEBASE_H

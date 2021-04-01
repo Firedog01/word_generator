@@ -1,4 +1,5 @@
-NO TOUCHY:
-max length=4
-length stress=3/4/3/1
-syllable stress=6/4/2
+max syllable length=4
+min word length=5
+max word length=7
+number of consecutive vowels=2
+can consonants repeat=1

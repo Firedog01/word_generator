@@ -1,1 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
+
+FILE(COPY dict.txt DESTINATION "${CMAKE_BINARY_DIR}/res")
+FILE(COPY preset.txt DESTINATION "${CMAKE_BINARY_DIR}/res")
+FILE(COPY saved_words.txt DESTINATION "${CMAKE_BINARY_DIR}")

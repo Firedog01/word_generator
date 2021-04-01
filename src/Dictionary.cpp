@@ -4,13 +4,14 @@
 
 #include "../lib/Dictionary.h"
 
-#define DICT_FILE "../res/dict.txt"
-#define DICT_FILE_TEMP "../res/dict_temp.txt"
 
-Dictionary::Dictionary() {
-    std::fstream _dict(DICT_FILE, std::ios::in);
+void Dictionary::init(std::string PATH) {
+    path = PATH;
+    dict_temp_path = (path.substr(0, path.length() - 8) + "dict_temp.txt");
+    //std::cout << "dict path temp: " << dict_temp_path << '\n';
+    std::fstream _dict(path, std::ios::in);
     if( ! _dict.good()) {
-        is_dict_good = false;
+        good = false;
         return;
     }
     std::string line;
@@ -50,16 +51,17 @@ Dictionary::Dictionary() {
         vowels[i] = tmp;
     }
     _dict.close();
-    is_dict_good = true;
+    good = true;
 }
 
 Dictionary::~Dictionary() {
-
+    delete [] vowels;
+    delete [] consonants;
 }
 
 void Dictionary::update_dict() {
     std::string line;
-    std::fstream _dict_temp(DICT_FILE_TEMP, std::ios::out | std::ios::trunc | std::ios::in );
+    std::fstream _dict_temp(dict_temp_path, std::ios::out | std::ios::trunc | std::ios::in );
     if( ! _dict_temp.good()) {
         std::cout << "nie wprowadzono zmian. Nie utworzono dict_temp.txt\n";
     }
@@ -74,7 +76,7 @@ void Dictionary::update_dict() {
         _dict_temp << ";" << vowels[i];
     }
     _dict_temp.seekg(0);
-    std::fstream _dict(DICT_FILE, std::ios::out|std::ios::trunc);
+    std::fstream _dict(path, std::ios::out|std::ios::trunc);
     if( ! _dict.good()) {
         std::cout << "nie wprowadzono zmian. Nie otwarto dict.txt\n";
     }
@@ -83,6 +85,16 @@ void Dictionary::update_dict() {
         _dict << line << '\n';
     }
     _dict_temp.close();
+}
+
+void Dictionary::display() {
+    std::cout << "Spolgloski (" << n_consonants << "):\n";
+    for(int i = 0; i < n_consonants; i++)
+        std::cout << consonants[i] << ' ';
+    std::cout << "\nSamogloski (" << n_vowels <<  "):\n";
+    for(int i = 0; i < n_vowels; i++)
+        std::cout << vowels[i] << ' ';
+    std::cout << '\n';
 }
 
 //adds new vowel to vowel table

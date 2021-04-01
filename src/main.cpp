@@ -6,6 +6,8 @@ using namespace std;
 void word_loop(SyllableBase&);
 void display_help(char a);
 
+#define DICTIONARY_PATH "../res/dict.txt"
+
 /*
  * todo (features):
  *  * zapisywanie kilku presetów
@@ -75,10 +77,10 @@ int main() {
                                         case 0:
                                             cout << "Podaj spolgloske:";
                                             getline(cin, line);
-                                            base.add_conso(line);
+                                            base.dictionary.add_conso(line);
                                             break;
                                         default:
-                                            base.add_conso(&line[i]);
+                                            base.dictionary.add_conso(&line[i]);
                                             break;
                                     }
                                     break;
@@ -89,15 +91,15 @@ int main() {
                                         case 0:
                                             cout << "Podaj samogloske:";
                                             getline(cin, line);
-                                            base.add_vowel(line);
+                                            base.dictionary.add_vowel(line);
                                             break;
                                         default:
-                                            base.add_vowel(&line[i]);
+                                            base.dictionary.add_vowel(&line[i]);
                                             break;
                                     }
                                     break;
                                 case 'd':
-                                    base.display_dict();
+                                    base.dictionary.display();
                                     break;
                                 case 'r':
                                     do { i++; }
@@ -106,10 +108,10 @@ int main() {
                                         case 0:
                                             cout << "Podaj co usunac:";
                                             getline(cin, line);
-                                            base.remove_sound(line);
+                                            base.dictionary.remove_sound(line);
                                             break;
                                         default:
-                                            base.remove_sound(&line[i]);
+                                            base.dictionary.remove_sound(&line[i]);
                                             break;
                                     }
                                     break;
@@ -122,7 +124,7 @@ int main() {
                     } //case 0
                         break;
                     case 'd':
-                        base.display_dict();
+                        base.dictionary.display();
                         break;
                     case 'c':
                         do { i++; }
@@ -131,12 +133,12 @@ int main() {
                             case 0:
                                 cout << "podaj nowa spolgloske:";
                                 getline(cin, line);
-                                base.add_conso(line);
+                                base.dictionary.add_conso(line);
                                 break;
                             default:
-                                base.add_conso(&line[i]);
+                                base.dictionary.add_conso(&line[i]);
                         }
-                        base.display_dict();
+                        base.dictionary.display();
                         break;
                     case 'v':
                         do { i++; }
@@ -145,13 +147,13 @@ int main() {
                             case 0:
                                 cout << "podaj nowa samogloske:";
                                 getline(cin, line);
-                                base.add_vowel(line);
+                                base.dictionary.add_vowel(line);
                                 break;
                             default:
-                                base.add_vowel(&line[i]);
+                                base.dictionary.add_vowel(&line[i]);
                                 break;
                         }
-                        base.display_dict();
+                        base.dictionary.display();
                         break;
                     case 'r':
                         do { i++; }
@@ -160,13 +162,13 @@ int main() {
                             case 0:
                                 cout << "Podaj co usunac:";
                                 getline(cin, line);
-                                base.remove_sound(line);
+                                base.dictionary.remove_sound(line);
                                 break;
                             default:
-                                base.remove_sound(&line[i]);
+                                base.dictionary.remove_sound(&line[i]);
                                 break;
                         }
-                        base.display_dict();
+                        base.dictionary.display();
                         break;
                     case 'x':
                         cout << "Aby wyjsc z programu nacisnij \'q\'.\n";
@@ -179,7 +181,14 @@ int main() {
                 break;
             case 'h':   //pomoc
                 ///////////////////////////////////////////////help
-                display_help('a');
+                do { i++; }
+                while (line[i] == ' ');
+                switch(line[i]) {
+                    case 0:
+                        display_help('a');
+                    default:
+                        display_help(line[i]);
+                }
                 break;
             case 'o':   //opcje
                 ///////////////////////////////////////////////options
@@ -195,11 +204,13 @@ int main() {
     }
     return 0;
 }
+
 void word_loop(SyllableBase& base) {
-    string line;
+    string line, word;
     int i;
     while(true) {
-        cout << base.new_w();
+        word = base.new_w();
+        cout << word;
         getline(cin, line);
         i = 0;
         if(line.empty()) { continue; }
@@ -209,7 +220,7 @@ void word_loop(SyllableBase& base) {
             case 'x':
                 return;
             case 's':
-                //todo save
+                base.save_word(word);
                 break;
             default:
                 break;
@@ -220,18 +231,30 @@ void word_loop(SyllableBase& base) {
 void display_help(char a) {
     switch(a) {
         case 'a':
-            cout << "Dostepne instrukcje:\n";
-            cout << "b    - (begin) zacznij generowanie nowych slow\n";
-            cout << "d    - (dictionary) edytuj opcje slownika sylab\n";
-            cout << "h    - (help) wyswietl pomoc\n";
-            cout << "o    - (options) modyfikuj opcje generowania slow\n";
-            cout << "q    - (quit) wyjscie z programu\n";
+            cout << "Dostepne opcje:\n";
+            cout << "b              - (begin) zacznij generowanie nowych slow\n";
+            cout << "d              - (dictionary) edytuj slownik glosek\n";
+            cout << "h              - (help) wyswietl pomoc\n";
+            cout << "o              - (options) modyfikuj opcje generowania slow\n";
+            cout << "q              - (quit) wyjscie z programu\n";
             cout << "\n";
             cout << "By dowiedziec sie o poszczegolnych funkcjach wcisnij \'h [opcja]\'\n";
             break;
         case 'b':
-            cout << "Instrukcja korzystania z b\n";
+            cout << "Instrukcja korzystania z opcji b\n";
             break;
+        case 'd':
+            cout << "Instrukcja korzystania z opcji d\n";
+            cout << "By wejsc w tryb edytowania slownika wybierz w menu opcje \'d\'\n";
+            cout << "Alternatywnie mozna korzystac z formy d [opcja] [argumenty] w jednym poleceniu\n";
+            cout << "c [argument/y] - (consonant) dodaj nowa samogloske\n";
+            cout << "v [argument/y] - (vowel) dodaj nowa spolgloske\n";
+            cout << "r [argument/y] - (remove) usun podane gloski\n";
+            cout << "d              - (display) wyswietl aktualny slownik\n";
+            cout << "x              - (exit) wyjdz z trybu edytowania slownika\n";
+            break;
+        default:
+            cout << "Nieprawidlowa opcja. Wpisz \'h\' by dowiedziec sie wiecej.\n";
     }
 
 }

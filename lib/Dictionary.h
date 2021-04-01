@@ -10,22 +10,33 @@
 #include <string>
 
 class Dictionary {
-    std::string* vowels;        //table of vowels
-    int n_vowels;               //number of vowels
-    std::string* consonants;    //table of consonants
-    int n_consonants;           //number of consonants
+    std::string path;                   //path of dictonary file
+    std::string dict_temp_path;         //path of dict_temp file
 
-    void string_sort(std::string*, int);//sorts arrays of strings because for some reason std::sort doesnt work ://
-    void update_dict();          //updates dictionary !!!file!!!
+    std::string* vowels = nullptr;      //table of vowels
+    int n_vowels = 0;                   //number of vowels
+    std::string* consonants = nullptr;  //table of consonants
+    int n_consonants = 0;               //number of consonants
+
+    //sorts arrays of strings because for some reason std::sort doesnt work ://
+    static void string_sort(std::string*, int);
+    //updates dictionary !!!file!!! Writes current contents of string tables to the file
+    void update_dict();
+
+    //returns position of a sound. first bool decides which table
+    //0 if consonants, 1 if vowels
+    int find_sound(bool, const std::string&);
 public:
-    bool is_dict_good;          //set true if file
+    Dictionary() {}
+    ~Dictionary();
+    void init(std::string);
 
+    bool good;                  //set true if file is properly handled
+
+    void display();
     void remove_sound(std::string);
     void add_conso(std::string);
     void add_vowel(std::string);
-    int find_sound(bool, const std::string&);
-    Dictionary();
-    ~Dictionary();
 };
 
 #endif //GENERATOR_SLOW_DICTIONARY_H
