@@ -25,6 +25,11 @@ int main() {
     SyllableBase base;
     string line;
     bool exit = false;
+    base.update();
+    base.display_base();
+    for(int i = 0; i < 50; i++) {
+        cout << base.new_w() << '\n';
+    }
 
     cout << "+-------------------------------------------------+\n";
     cout << "|            Program do tworzenia slow            |\n";
@@ -39,24 +44,7 @@ int main() {
         switch (line[i]) {
             case 'b':   //zacznij generowac slowa
                 ///////////////////////////////////////////////begin
-                {
-                    cout << "word creation>\n";
-                    string word;
-                while (line[i] != 'x') {
-                    word = base.new_w();
-                    cout << word << "\t\t:";
-                    getline(cin, line);
-                    switch(line[i]) {
-                        case 'l':
-                            //modify length
-                            break;
-                        case 's':
-                            base.save_word(word);
-                            break;
-                    }
-                }
-                } //b
-                //word_loop(base);
+                word_loop(base);
                 break;
             case 'd':   //opcje slownika
                 ///////////////////////////////////////////////dictionary
@@ -192,6 +180,21 @@ int main() {
                 break;
             case 'o':   //opcje
                 ///////////////////////////////////////////////options
+                {
+                do { i++; } while(line[i] == ' ');
+                switch(line[i]) {
+                    case 0:
+                        break;
+                    case 'l': // min i max
+                        break;
+                    case 'd':
+                        break;
+                    case 'v':
+                        break;
+                    case 'm':
+                        break;
+                }
+                }
                 break;
             case 'q':   //wyjście
                 ///////////////////////////////////////////////quit
@@ -207,12 +210,14 @@ int main() {
 
 void word_loop(SyllableBase& base) {
     string line, word;
+    base.update();
     int i;
     while(true) {
         word = base.new_w();
         cout << word;
-        getline(cin, line);
+
         i = 0;
+        getline(cin, line);
         if(line.empty()) { continue; }
         while (line[i] == ' ') { i++; }
         switch(line[i]) {
@@ -239,6 +244,7 @@ void display_help(char a) {
             cout << "q              - (quit) wyjscie z programu\n";
             cout << "\n";
             cout << "By dowiedziec sie o poszczegolnych funkcjach wcisnij \'h [opcja]\'\n";
+            cout << "By dowiedzien sie wiecej o dzialaniu programu i korzystaniu z niego wpisz \'h h\'.\n";
             break;
         case 'b':
             cout << "Instrukcja korzystania z opcji b\n";
@@ -252,6 +258,10 @@ void display_help(char a) {
             cout << "r [argument/y] - (remove) usun podane gloski\n";
             cout << "d              - (display) wyswietl aktualny slownik\n";
             cout << "x              - (exit) wyjdz z trybu edytowania slownika\n";
+            break;
+        case 'h':
+            cout << "Korzystanie z programu i dodatkowe informacje\n";
+            cout << "work in progress\n";
             break;
         default:
             cout << "Nieprawidlowa opcja. Wpisz \'h\' by dowiedziec sie wiecej.\n";

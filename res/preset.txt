@@ -1,5 +1,5 @@
 max syllable length=4
-min word length=5
+min word length=4
 max word length=7
 number of consecutive vowels=2
 can consonants repeat=1

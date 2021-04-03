@@ -33,6 +33,11 @@ public:
 
     bool good;                  //set true if file is properly handled
 
+    std::string get_vowel(int n);
+    std::string get_conso(int n);
+    int get_n_vowels();
+    int get_n_conso();
+
     void display();
     void remove_sound(std::string);
     void add_conso(std::string);

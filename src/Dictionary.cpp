@@ -246,4 +246,21 @@ void Dictionary::string_sort(std::string* table, int length) {
     }
 }
 
-
+std::string Dictionary::get_vowel(int n){
+    if(n < n_vowels)
+        return vowels[n];
+    else
+        return std::string();
+}
+std::string Dictionary::get_conso(int n) {
+    if(n < n_consonants)
+        return consonants[n];
+    else
+        return std::string();
+}
+int Dictionary::get_n_vowels() {
+    return n_vowels;
+}
+int Dictionary::get_n_conso() {
+    return n_consonants;
+}
