@@ -22,6 +22,13 @@ public:
 
     bool good;
 
+    void set_max_syllable_len(std::string);
+    void set_n_cons_vowels(std::string);
+    void set_repeating_conso(std::string);
+    void set_word_length_min(std::string, bool);
+    void set_word_length_max(std::string);
+    void set_word_lengths(std::string);
     void init(std::string);
+    void display();
 };
 #endif //GENERATOR_SLOW_OPTIONS_H

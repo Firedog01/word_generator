@@ -5,6 +5,8 @@ using namespace std;
 
 void word_loop(SyllableBase&);
 void display_help(char a);
+void menu_manager(string, string);
+
 
 #define DICTIONARY_PATH "../res/dict.txt"
 
@@ -159,7 +161,6 @@ int main() {
                         base.dictionary.display();
                         break;
                     case 'x':
-                        cout << "Aby wyjsc z programu nacisnij \'q\'.\n";
                         break;
                     default:
                         cout << "Zla opcja. Wpisz \'h d\' by dowiedziec sie wiecej.\n";
@@ -184,14 +185,103 @@ int main() {
                 do { i++; } while(line[i] == ' ');
                 switch(line[i]) {
                     case 0:
+                        {
+
+                        }//case 0
                         break;
-                    case 'l': // min i max
+                    case 'l':
+                        do { i++; } while(line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "Podaj word length min: ";
+                                getline(cin, line);
+                                base.options.set_word_length_min(line, 1);
+                                cout << "Podaj word length max: ";
+                                getline(cin, line);
+                                base.options.set_word_length_max(line);
+                                break;
+                            case 'a': //min
+                                do { i++; } while (line[i] == ' ');
+                                switch (line[i]) {
+                                    case 0:
+                                        cout << "Podaj word length min: ";
+                                        getline(cin, line);
+                                        base.options.set_word_length_min(line, 0);
+                                        break;
+                                    default:
+                                        base.options.set_word_length_min(&line[i], 0);
+                                }
+                                break;
+                            case 'b': //max
+                                do { i++; } while (line[i] == ' ');
+                                switch (line[i]) {
+                                    case 0:
+                                        cout << "Podaj word length max: ";
+                                        getline(cin, line);
+                                        base.options.set_word_length_max(line);
+                                        break;
+                                    default:
+                                        base.options.set_word_length_max(&line[i]);
+                                }
+                                break;
+                            case 'c': //both
+                                do { i++; } while (line[i] == ' ');
+                                switch (line[i]) {
+                                    case 0:
+                                        cout << "Podaj word length min: ";
+                                        getline(cin, line);
+                                        base.options.set_word_length_min(line, 1);
+                                        cout << "Podaj word length max: ";
+                                        getline(cin, line);
+                                        base.options.set_word_length_max(line);
+                                        break;
+                                    default:
+                                        base.options.set_word_lengths(&line[i]);
+                                }
+                                break;
+                            default:
+                                cout << "Zla opcja. Wpisz \'h o\' by dowiedziec sie wiecej.\n";
+                                break;
+                        }
                         break;
-                    case 'd':
+                    case 'd': //displays current options
+                        base.options.display();
                         break;
-                    case 'v':
+                    case 'c': //repeating conso
+                        do { i++; } while(line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "Podaj wartosc repeating consonant: ";
+                                getline(cin, line);
+                                base.options.set_repeating_conso(line);
+                                break;
+                            default:
+                                base.options.set_repeating_conso(&line[i]);
+                        }
                         break;
-                    case 'm':
+                    case 'm': //max syllable length
+                        do { i++; } while(line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "Podaj max syllable length: ";
+                                getline(cin, line);
+                                base.options.set_max_syllable_len(line);
+                                break;
+                            default:
+                                base.options.set_max_syllable_len(&line[i]);
+                        }
+                        break;
+                    case 'n': //n cons vowels
+                        do { i++; } while(line[i] == ' ');
+                        switch(line[i]) {
+                            case 0:
+                                cout << "Podaj n consecutive vowels: ";
+                                getline(cin, line);
+                                base.options.set_n_cons_vowels(line);
+                                break;
+                            default:
+                                base.options.set_n_cons_vowels(&line[i]);
+                        }
                         break;
                 }
                 }
@@ -200,12 +290,22 @@ int main() {
                 ///////////////////////////////////////////////quit
                 exit = true;
                 break;
+            case 'x':
+                cout << "Aby wyjsc z programu nacisnij \'q\'.\n";
+                break;
             default:    //error
                 ///////////////////////////////////////////////error
                 break;
         }
     }
     return 0;
+}
+
+void menu_manager(string option, string param) {
+    int i = 0;
+    switch(option[i]) {
+        ;
+    }
 }
 
 void word_loop(SyllableBase& base) {
@@ -266,5 +366,5 @@ void display_help(char a) {
         default:
             cout << "Nieprawidlowa opcja. Wpisz \'h\' by dowiedziec sie wiecej.\n";
     }
-
 }
+
